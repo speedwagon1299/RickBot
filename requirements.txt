@@ -1,10 +1,2 @@
-transformers
-torch
-flask
-triton
-bitsandbytes
-accelerate
-peft
-xformers<0.0.27
-trl<0.9.0
-git+https://github.com/unslothai/unsloth.git@main
+"unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git"
+--no-deps "xformers<0.0.27" "trl<0.9.0" peft accelerate bitsandbytes
