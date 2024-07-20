@@ -1,5 +1,3 @@
-import torch
-from flask import Flask, request, jsonify, render_template
 from unsloth import FastLanguageModel
 import torch
 max_seq_length = 2048
@@ -62,53 +60,56 @@ FastLanguageModel.for_inference(model) # Enable native 2x faster inference
 
 from transformers import TextStreamer
 
-app = Flask(__name__)
 
-conversation_history = []
 
-def format_conversation(history):
-    # Concatenate the conversation history with prompts and responses
-    formatted_history = ""
-    for i, (prompt, response) in enumerate(history):
-        formatted_history += alpaca_prompt.format(prompt, response)
-    return formatted_history
 
-@app.route('/')
-def index():
-    return render_template('index.html')
 
-@app.route('/chat', methods=['POST'])
-def chat():
-    user_input = request.json.get("user_input")
-    if not user_input:
-        return jsonify({"error": "Empty input"}), 400
+# # Initialize conversation history
+# conversation_history = []
 
-    global conversation_history
-    conversation_history.append((user_input, ""))
+# def format_conversation(history):
+#     # Concatenate the conversation history with prompts and responses
+#     formatted_history = ""
+#     for i, (prompt, response) in enumerate(history):
+#         formatted_history += alpaca_prompt.format(prompt, response)
+#     return formatted_history
 
-    # Keep only the last 5 turns of conversation history
-    conversation_history[:] = conversation_history[-5:]
+# def chat(model, tokenizer, max_history=5):
+#     # Initialize TextStreamer for output streaming
+#     text_streamer = TextStreamer(tokenizer)
 
-    # Format the conversation history for the model
-    formatted_history = format_conversation(conversation_history)
+#     while True:
+#         # Get user input
+#         user_input = input("You: ")
+#         if user_input.lower() == "exit":
+#             break
+        
+#         # Append the user input to the conversation history
+#         conversation_history.append((user_input, ""))
+        
+#         # Keep only the last `max_history` turns
+#         conversation_history[:] = conversation_history[-max_history:]
 
-    # Tokenize the formatted history
-    inputs = tokenizer([formatted_history], return_tensors="pt").to("cuda")
+#         # Format the conversation history for the model
+#         formatted_history = format_conversation(conversation_history)
+        
+#         # Tokenize the formatted history
+#         inputs = tokenizer([formatted_history], return_tensors="pt").to("cuda")
+        
+#         # Generate a response
+#         outputs = model.generate(**inputs, max_new_tokens=128)
+        
+#         # Decode the generated response
+#         response = tokenizer.decode(outputs[0], skip_special_tokens=True)
+        
+#         # Extract only the bot's response after the last prompt
+#         bot_response = response.split(alpaca_prompt.format(user_input, ""))[-1].strip()
+        
+#         # Update the last user input with the model response in the conversation history
+#         conversation_history[-1] = (user_input, bot_response)
+        
+#         # Print the model response
+#         print(f"Bot: {bot_response}")
 
-    # Generate a response
-    text_streamer = TextStreamer(tokenizer)
-    outputs = model.generate(**inputs, streamer=text_streamer, max_new_tokens=128)
-
-    # Decode the generated response
-    response = tokenizer.decode(outputs[0], skip_special_tokens=True)
-
-    # Extract only the bot's response after the last prompt
-    bot_response = response.split(alpaca_prompt.format(user_input, ""))[-1].strip()
-
-    # Update the last user input with the model response in the conversation history
-    conversation_history[-1] = (user_input, bot_response)
-
-    return jsonify({"user_input": user_input, "bot_response": bot_response, "history": conversation_history})
-
-if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0')
+# # Example usage
+# chat(model, tokenizer)
