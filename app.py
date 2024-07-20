@@ -6,30 +6,15 @@ max_seq_length = 2048
 dtype = None
 load_in_4bit = True 
 
+from unsloth import FastLanguageModel
 model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name = "unsloth/llama-3-8b-bnb-4bit",
+    model_name = "lora_model", # YOUR MODEL YOU USED FOR TRAINING
     max_seq_length = max_seq_length,
     dtype = dtype,
     load_in_4bit = load_in_4bit,
-    # token = "hf_...",
 )
+FastLanguageModel.for_inference(model) # Enable native 2x faster inference
 
-model = FastLanguageModel.get_peft_model(
-    model,
-    r = 16, # Choose any number > 0 ! Suggested 8, 16, 32, 64, 128
-    target_modules = ["q_proj", "k_proj", "v_proj", "o_proj",
-                      "gate_proj", "up_proj", "down_proj",],
-    lora_alpha = 16,
-    lora_dropout = 0, # Supports any, but = 0 is optimized
-    bias = "none",    # Supports any, but = "none" is optimized
-    # [NEW] "unsloth" uses 30% less VRAM, fits 2x larger batch sizes!
-    use_gradient_checkpointing = "unsloth", # True or "unsloth" for very long context
-    random_state = 42,
-    use_rslora = False,  # We support rank stabilized LoRA
-    loftq_config = None, # And LoftQ
-)
-
-# Alpaca prompt template
 alpaca_prompt = """Respond to the given text the way Rick would in the show Rick and Morty using as much context from the input to harbor a response
 
 ### Input:
@@ -50,15 +35,6 @@ def formatting_prompts_func(examples):
         text = alpaca_prompt.format(input_text, output_text) + EOS_TOKEN
         texts.append(text)
     return {"text": texts,}
-
-from unsloth import FastLanguageModel
-model, tokenizer = FastLanguageModel.from_pretrained(
-    model_name = "lora_model", # YOUR MODEL YOU USED FOR TRAINING
-    max_seq_length = max_seq_length,
-    dtype = dtype,
-    load_in_4bit = load_in_4bit,
-)
-FastLanguageModel.for_inference(model) # Enable native 2x faster inference
 
 from transformers import TextStreamer
 
