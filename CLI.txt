@@ -1,0 +1,51 @@
+az group create --name "rickbot-rg" --location "southindia"
+
+{
+  "id": "/subscriptions/1761fabd-6c59-467f-8fa7-154c65ab2a0b/resourceGroups/rickbot-rg",
+  "location": "southindia",
+  "managedBy": null,
+  "name": "rickbot-rg",
+  "properties": {
+    "provisioningState": "Succeeded"
+  },
+  "tags": null,
+  "type": "Microsoft.Resources/resourceGroups"
+}
+
+
+az ml workspace create --name "rickbot-ws"
+
+{
+  "allow_roleassignment_on_rg": true,
+  "application_insights": "/subscriptions/1761fabd-6c59-467f-8fa7-154c65ab2a0b/resourceGroups/tutorial-dev-rg/providers/Microsoft.insights/components/rickbotwinsights5aa1aa49",
+  "description": "rickbot-ws",
+  "discovery_url": "https://southindia.api.azureml.ms/discovery",
+  "display_name": "rickbot-ws",
+  "enable_data_isolation": false,
+  "hbi_workspace": false,
+  "id": "/subscriptions/1761fabd-6c59-467f-8fa7-154c65ab2a0b/resourceGroups/tutorial-dev-rg/providers/Microsoft.MachineLearningServices/workspaces/rickbot-ws",
+  "identity": {
+    "principal_id": "cfd02d86-e09f-4917-b0fc-055d786b015b",
+    "tenant_id": "34ce3f80-dde8-4588-9060-9259b10a3489",
+    "type": "system_assigned"
+  },
+  "key_vault": "/subscriptions/1761fabd-6c59-467f-8fa7-154c65ab2a0b/resourceGroups/tutorial-dev-rg/providers/Microsoft.Keyvault/vaults/rickbotwkeyvault1ef355b4",
+  "location": "southindia",
+  "managed_network": {
+    "isolation_mode": "disabled",
+    "outbound_rules": []
+  },
+  "mlflow_tracking_uri": "azureml://southindia.api.azureml.ms/mlflow/v1.0/subscriptions/1761fabd-6c59-467f-8fa7-154c65ab2a0b/resourceGroups/tutorial-dev-rg/providers/Microsoft.MachineLearningServices/workspaces/rickbot-ws",
+  "name": "rickbot-ws",
+  "public_network_access": "Enabled",
+  "resourceGroup": "tutorial-dev-rg",
+  "resource_group": "tutorial-dev-rg",
+  "serverless_compute": {
+    "no_public_ip": false
+  },
+  "storage_account": "/subscriptions/1761fabd-6c59-467f-8fa7-154c65ab2a0b/resourceGroups/tutorial-dev-rg/providers/Microsoft.Storage/storageAccounts/rickbotwstoragec823d5d86",
+  "system_datastores_auth_mode": "accesskey",
+  "tags": {
+    "createdByToolkit": "cli-v2-1.18.0"
+  }
+}
